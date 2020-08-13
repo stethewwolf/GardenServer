@@ -1,0 +1,61 @@
+#
+#   Author : stefano prina <stethewwolf@null.net>
+#
+# MIT License
+# 
+# Copyright (c) 2019 Stefano Prina
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+from app_modules.core import LoggerFactory
+from app_modules.core import SingleConfig
+from app_modules.core import AppConstants
+from app_modules.commands.command import Command
+import app_modules.core.database as db
+
+import os, sqlite3
+
+class Set_env( Command ):
+    short_arg   = None
+    long_arg    = None
+    cmd_help    = None
+    cmd_type    = None
+    cmd_action  = None
+
+    def __init__( self, param  = None ):
+        super().__init__( )
+        self.logger = LoggerFactory.getLogger( str( self.__class__ ))
+
+    def run( self ):
+        # create app dir inside user home directory
+        self.home_app()
+
+        dbi = db.get_instance()
+        dbi.open()
+
+
+
+    def home_app(self):
+        if not os.path.exists( self.cfg['private']['home'] ) :
+            os.makedirs( self.cfg['private']['home'] )
+            SingleConfig.save( self.cfg )
+            self.logger.debug("created app home dir")
+        else:
+            self.logger.debug("app home dir yet present")
+
