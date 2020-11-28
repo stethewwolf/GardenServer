@@ -23,9 +23,23 @@
 # SOFTWARE.
 #
 
+import os
 
-APP_NAME                            = 'App'
+APP_NAME                            = 'garden-srv'
 APP_DESCRIPTION                     = 'Garden Server app'
 APP_VERSION                         = '0.1.0'
-CONTROLLER_FW_MIN_VERSION           = '12'
 
+APP_HOME = os.path.join(os.environ['HOME'],APP_NAME)
+CONF_FILE_NAME = 'conf.ini'
+CONF_FILE = os.path.join(APP_HOME, CONF_FILE_NAME)
+
+CONF_TAG_APP = 'app'
+
+# min garden controller version supported
+CONTROLLER_FW_MIN_VERSION = '11'
+
+CONF_BAUD_RATE = "serial-baud-rate"
+DEFAULT_BAUD_RATE = "115200"
+
+CONF_SERIAL = "serial-device"
+DEFAULT_SERIAL = "/dev/ttyAMA0"

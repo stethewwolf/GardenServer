@@ -23,37 +23,29 @@
 #     SOFTWARE. 
 
 import configparser, os
+import app_modules.core.constants as AppConstants
 
 __instance = None
 
 def getConfig():
-    __APP_HOME = '.app'
-    __CONF_FILE = 'conf.ini'
-    __DATA_FILE = 'data.sqlite3'
     global __instance
 
     if not __instance :
         __instance = configparser.ConfigParser()
-        __instance['private'] = {
-                'home' : os.path.join( os.environ['HOME'], __APP_HOME),
-                'conf' : os.path.join( os.environ['HOME'], __APP_HOME, __CONF_FILE ),
-                'data' : os.path.join( os.environ['HOME'], __APP_HOME, __DATA_FILE ),
-            }
-
-        if os.path.exists(
-            __instance['private']['conf']
-        ) :
-            __instance.read( __instance['private']['conf'] )
+        __instance.add_section(AppConstants.CONF_TAG_APP)
+        
     return __instance
 
-def loadConfig( path ):
+def loadConfig(path):
     global __instance
+
     if not __instance:
         getConfig()
+    
+    if os.path.exists(path):
+            __instance.read(path)
 
-    __instance.read( path )
 
-
-def save( cfg ):
-    with open( cfg['private']['conf'], 'w') as file:
+def save(cfg):
+    with open(AppConstants.CONF_FILE, 'w') as file:
         cfg.write(file)

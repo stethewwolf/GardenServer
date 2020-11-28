@@ -6,7 +6,7 @@ from app_modules.core import AppDBIface
 class Garden_Controller_Interface():
     """ GardenControllerInterface """
     def __init__(self):
-        self.ser = serial.Serial('/dev/ttyACM0', '9600')
+        self.ser = serial.Serial('/dev/ttyAMA0', '115200')
         self.dbi = AppDBIface.get_instance()
 
         self.commands_map = {'air_temp':'0', 'air_moisture':'1',
@@ -19,7 +19,7 @@ class Garden_Controller_Interface():
     def get_temperature(self):
         """ get_temperature """
         self.ser.write(self.commands_map['air_temp'].encode())
-        self.ser.write('\n'.encode())
+        #self.ser.write('\n'.encode())
         time.sleep(self.sec2sleep)
         value = self.ser.readline()
         value = float(value.decode())
@@ -29,7 +29,7 @@ class Garden_Controller_Interface():
     def get_air_moisture(self):
         """ get_air_moisture """
         self.ser.write(self.commands_map['air_moisture'].encode())
-        self.ser.write('\n'.encode())
+        #self.ser.write('\n'.encode())
         time.sleep(self.sec2sleep)
         value = self.ser.readline()
         value = float(value.decode())
@@ -39,7 +39,7 @@ class Garden_Controller_Interface():
     def get_light(self):
         """ get_light """
         self.ser.write(self.commands_map['light'].encode())
-        self.ser.write('\n'.encode())
+        #self.ser.write('\n'.encode())
         time.sleep(self.sec2sleep)
         value = self.ser.readline()
         value = float(value.decode())
@@ -55,7 +55,7 @@ class Garden_Controller_Interface():
         elif sensor_idx == 2:
             self.ser.write(self.commands_map['soil_moisture_2'].encode())
             flag = True
-        self.ser.write('\n'.encode())
+        #self.ser.write('\n'.encode())
 
         time.sleep(self.sec2sleep)
 
@@ -76,7 +76,7 @@ class Garden_Controller_Interface():
     def set_pump_on(self):
         """ set_pump_on """
         self.ser.write(self.commands_map['pump_on'].encode())
-        self.ser.write('\n'.encode())
+        #self.ser.write('\n'.encode())
         time.sleep(self.sec2sleep)
         value = self.ser.readline()
         #self.dbi.add_pump_status(value.decode())
@@ -85,7 +85,7 @@ class Garden_Controller_Interface():
     def set_pump_off(self):
         """ set_pump_off """
         self.ser.write(self.commands_map['pump_off'].encode())
-        self.ser.write('\n'.encode())
+        #self.ser.write('\n'.encode())
         time.sleep(self.sec2sleep)
         value = self.ser.readline()
         #self.dbi.add_pump_status(value.decode())

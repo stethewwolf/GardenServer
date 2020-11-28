@@ -1,6 +1,3 @@
-#
-#   Author : stefano prina <stethewwolf@null.net>
-#
 # MIT License
 # 
 # Copyright (c) 2019 Stefano Prina
@@ -27,42 +24,19 @@ from app_modules.core import LoggerFactory
 from app_modules.core import SingleConfig
 from app_modules.core import AppConstants
 from app_modules.commands.command import Command
-import app_modules.core.database as db
 
-import os, sqlite3
-
-class Set_env( Command ):
-    short_arg   = None
-    long_arg    = None
-    cmd_help    = None
-    cmd_type    = None
+class Set_Baud_Rate ( Command ):
+    short_arg   = 'b'
+    long_arg    = 'baud'
+    cmd_help    = 'define baud rate'
+    cmd_type    = str
     cmd_action  = None
 
-    def __init__( self, param  = None ):
+    def __init__( self, param = None ):
         super().__init__( )
         self.logger = LoggerFactory.getLogger( str( self.__class__ ))
-        self.cfg = SingleConfig.getConfig()
+        self.config_file = param
 
     def run( self ):
-        # init configuration object
-        self.init_app_conf()
-
-        # manage application folder
-        self.home_app_mngr()
-
-    def init_app_conf(self):
-        self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_BAUD_RATE] = AppConstants.DEFAULT_BAUD_RATE
-        self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_SERIAL] = AppConstants.DEFAULT_SERIAL
-
-
-    def home_app_mngr(self):
-        # create app dir inside user home directory
-        if not os.path.exists(AppConstants.APP_HOME):
-            os.makedirs(AppConstants.APP_HOME)
-            self.logger.debug("created app home dir")
-        else:
-            self.logger.debug("app home dir yet present")
-
-        if not os.path.exists(AppConstants.CONF_FILE):
-            SingleConfig.save(self.cfg)
-            self.logger.debug("created conf file")
+        SingleConfig.loadConfig( self.config_file )
+        

@@ -22,9 +22,13 @@
 
 __all__ = [
     'Set_env', 
-    'Set_conf'
+    'Set_conf',
+    'Set_Baud_Rate',
+    'Set_Device'
     ]
 
 # deprecated to keep older scripts who import this from breaking
 from app_modules.commands.setter.set_env       import Set_env
 from app_modules.commands.setter.set_conf    import Set_conf
+from app_modules.commands.setter.set_baud_rate  import Set_Baud_Rate
+from app_modules.commands.setter.set_device import Set_Device

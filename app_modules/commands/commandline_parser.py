@@ -44,9 +44,18 @@ class CommandLine_Parser( object ):
             ]
 
         self.scl = [
-            Set_conf
+            Set_Baud_Rate,
+            Set_Device
             ]
+        # regist set_conf
+        self.parser.add_argument(
+            "--"+Set_conf.long_arg,
+            "-"+Set_conf.short_arg,
+            type = Set_conf.cmd_type,
+            help = Set_conf.cmd_help
+        )
 
+        # register all other cmds
         for cmd in self.rcl + self.scl:
             if cmd.short_arg:
                 if cmd.cmd_type:
@@ -80,12 +89,18 @@ class CommandLine_Parser( object ):
     def parse( self ):
         command_list = []
 
+        # setup application env
         self.logger.debug('add set_env command')
         command_list.append( Set_env() )
 
+        # parse command line
         self.logger.debug('parse starts')
 
         args = self.parser.parse_args()
+
+        # check if conf file is passed
+        if getattr( args, Set_conf.long_arg.replace("-","_") ) :
+            command_list.append( Set_conf( getattr( args, Set_conf.long_arg.replace("-","_") ) ) )
 
         for cmd in self.scl:
             if getattr( args, cmd.long_arg.replace("-","_") ) :
