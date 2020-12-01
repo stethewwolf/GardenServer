@@ -25,17 +25,18 @@ from app_modules.core import SingleConfig
 from app_modules.core import AppConstants
 from app_modules.commands.command import Command
 
-class Set_Device ( Command ):
-    short_arg   = 'd'
-    long_arg    = 'device'
-    cmd_help    = 'define serial device'
+class Set_Cicle_Min ( Command ):
+    short_arg   = 's'
+    long_arg    = 'sample'
+    cmd_help    = 'define time between two checks'
     cmd_type    = str
     cmd_action  = None
 
     def __init__( self, param = None ):
         super().__init__( )
         self.logger = LoggerFactory.getLogger( str( self.__class__ ))
-        self.device_path = param
+        self.cicle_min = param
 
     def run( self ):
-        self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_SERIAL] = self.device_path
+        self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_SLEEP_MIN] = self.cicle_min
+        

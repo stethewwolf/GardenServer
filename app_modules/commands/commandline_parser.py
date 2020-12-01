@@ -45,7 +45,9 @@ class CommandLine_Parser( object ):
 
         self.scl = [
             Set_Baud_Rate,
-            Set_Device
+            Set_Device,
+            Set_Time2Water,
+            Set_Cicle_Min
             ]
         # regist set_conf
         self.parser.add_argument(
@@ -117,6 +119,10 @@ class CommandLine_Parser( object ):
             if count > 1 :
                 self.logger.warn("it is possible use only one task")
                 break
+        
+        if count == 0:
+            command_list.append(Monitor())
+
 
         self.logger.debug('parse ends')
         return command_list

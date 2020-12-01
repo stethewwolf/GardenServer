@@ -35,8 +35,7 @@ class Set_Baud_Rate ( Command ):
     def __init__( self, param = None ):
         super().__init__( )
         self.logger = LoggerFactory.getLogger( str( self.__class__ ))
-        self.config_file = param
+        self.baud_rate = param
 
-    def run( self ):
-        SingleConfig.loadConfig( self.config_file )
-        
+    def run(self):
+        self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_BAUD_RATE] = self.baud_rate

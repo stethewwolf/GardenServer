@@ -53,7 +53,9 @@ class Set_env( Command ):
     def init_app_conf(self):
         self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_BAUD_RATE] = AppConstants.DEFAULT_BAUD_RATE
         self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_SERIAL] = AppConstants.DEFAULT_SERIAL
-
+        self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_SLEEP_MIN] = AppConstants.DEFAULT_SLEEP_MIN
+        self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_WATERING_SEC] = AppConstants.DEFAULT_WATERING_SEC
+        self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_MOISTURE_GUARD] = AppConstants.DEFAULT_MOISTURE_GUARD
 
     def home_app_mngr(self):
         # create app dir inside user home directory

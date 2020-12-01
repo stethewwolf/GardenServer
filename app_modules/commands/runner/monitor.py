@@ -33,14 +33,13 @@ class Monitor():
     long_arg    = 'monitor'
     cmd_help    = 'Run application in monitor mode, in this mode the \
             application will compare the current soil moisture and if less then\
-            treshold it will power on the pump'
+            treshold it will power on the pump [ DEFAULT ]'
     cmd_type    = None
     cmd_action  = 'store_true'
 
     def __init__(self, param=None):
         self.cfg = SingleConfig.getConfig()
         self.gci = Garden_Controller_Interface()
-        self.soil_moisture_guard = 20
 
     def run( self ):
         soil_mositure_s1 = self.gci.get_soil_moiusture(1)
@@ -49,19 +48,22 @@ class Monitor():
         air_temperature = self.gci.get_temperature()
         air_moisture = self.gci.get_air_moisture()
 
+        soil_moisture_guard = int(self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_MOISTURE_GUARD])
+
         print("=======================")
         print('Air temperature : {} C'.format(air_temperature))
         print('Air moisture : {} %'.format(air_moisture))
         print('Light idx ( 0 dark - 100 full light) : {}'.format(light))
         print('Soil moisture sensor 1 : {}'.format(soil_mositure_s1))
         print('Soil moisture sensor 2 : {}'.format(soil_mositure_s2))
-        print('Soil moisture thresold : {}'.format(self.soil_moisture_guard))
+        print('Soil moisture thresold : {}'.format(soil_moisture_guard))
 
-        if (soil_mositure_s1 <= self.soil_moisture_guard) or \
-           (soil_mositure_s2 < self.soil_moisture_guard):
-            print("start pump, waiting 120 sec")
+        if (soil_mositure_s1 <= soil_moisture_guard) or \
+            (soil_mositure_s2 < soil_moisture_guard):
+
+            print("start pump, watering for "+self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_WATERING_SEC]+" sec")
             self.gci.set_pump_on()
-            time.sleep(120)
+            time.sleep(int(self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_WATERING_SEC]))
             self.gci.set_pump_off()
             print("stop pump")
 
