@@ -27,7 +27,7 @@ from app_modules.core import LoggerFactory
 from app_modules.core import SingleConfig
 from app_modules.core import AppConstants
 from app_modules.commands.command import Command
-import app_modules.core.database as db
+from app_modules.core import AppDBIface
 
 import os, sqlite3
 
@@ -42,6 +42,7 @@ class Set_env( Command ):
         super().__init__( )
         self.logger = LoggerFactory.getLogger( str( self.__class__ ))
         self.cfg = SingleConfig.getConfig()
+        self.dbi = AppDBIface.get_instance()
 
     def run( self ):
         # init configuration object
@@ -49,6 +50,9 @@ class Set_env( Command ):
 
         # manage application folder
         self.home_app_mngr()
+
+        # set up database
+        self.dbi.open()
 
     def init_app_conf(self):
         self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_BAUD_RATE] = AppConstants.DEFAULT_BAUD_RATE

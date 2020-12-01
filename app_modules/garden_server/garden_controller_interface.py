@@ -23,7 +23,7 @@ class Garden_Controller_Interface():
         time.sleep(self.sec2sleep)
         value = self.ser.readline()
         value = float(value.decode())
-        #self.dbi.add_air_temperature(value)
+        self.dbi.add_air_temperature(value)
         return value
 
     def get_air_moisture(self):
@@ -33,7 +33,7 @@ class Garden_Controller_Interface():
         time.sleep(self.sec2sleep)
         value = self.ser.readline()
         value = float(value.decode())
-        #self.dbi.add_air_moisture(value)
+        self.dbi.add_air_moisture(value)
         return value
 
     def get_light(self):
@@ -43,7 +43,7 @@ class Garden_Controller_Interface():
         time.sleep(self.sec2sleep)
         value = self.ser.readline()
         value = float(value.decode())
-        #self.dbi.add_light(value)
+        self.dbi.add_light(value)
         return value
 
     def get_soil_moiusture(self, sensor_idx):
@@ -63,7 +63,7 @@ class Garden_Controller_Interface():
         if flag:
             value = self.ser.readline()
             value = float(value.decode())
-        #self.dbi.add_soil_moisture(sensor_idx,value)
+        self.dbi.add_soil_moisture(sensor_idx,value)
         return value
 
     def get_pump_status(self):
@@ -79,7 +79,7 @@ class Garden_Controller_Interface():
         #self.ser.write('\n'.encode())
         time.sleep(self.sec2sleep)
         value = self.ser.readline()
-        #self.dbi.add_pump_status(value.decode())
+        self.dbi.add_pump_status(value.decode())
 
 
     def set_pump_off(self):
@@ -88,7 +88,7 @@ class Garden_Controller_Interface():
         #self.ser.write('\n'.encode())
         time.sleep(self.sec2sleep)
         value = self.ser.readline()
-        #self.dbi.add_pump_status(value.decode())
+        self.dbi.add_pump_status(value.decode())
 
 
     def close(self):

@@ -26,7 +26,7 @@ __all__ = [
     'mlogger',
     'config',
     'constants',
-    'database'
+    'AppDBIface'
     ]
 
 # deprecated to keep older scripts who import this from breaking

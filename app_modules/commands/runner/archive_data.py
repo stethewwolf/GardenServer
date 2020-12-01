@@ -32,7 +32,7 @@ class Archive_Data():
     short_arg   = 'a'
     long_arg    = 'archive'
     cmd_help    = 'Run application in archive mode, in this mode the \
-            application only save data to db'
+                    application only save data to db'
     cmd_type    = None
     cmd_action  = 'store_true'
 

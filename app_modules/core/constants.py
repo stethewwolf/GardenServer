@@ -32,6 +32,8 @@ APP_VERSION                         = '0.1.0'
 APP_HOME = os.path.join(os.environ['HOME'],APP_NAME)
 CONF_FILE_NAME = 'conf.ini'
 CONF_FILE = os.path.join(APP_HOME, CONF_FILE_NAME)
+DB_FILE_NAME = 'data.sqlite'
+DB_FILE = os.path.join(APP_HOME, DB_FILE_NAME)
 
 CONF_TAG_APP = 'app'
 

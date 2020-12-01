@@ -54,7 +54,7 @@ class Database_Interface():
 
     def open(self):
         # open db 
-        self.con = sqlite3.connect(SingleConfig.getConfig()['private']['data'])
+        self.con = sqlite3.connect(AppConstants.DB_FILE)
 
         #  check db contain tables
         cursor = self.con.cursor()
@@ -97,8 +97,7 @@ class Database_Interface():
     def add_soil_moisture(self, sensor_id, value):
         timestamp = datetime.datetime.now()
         cursor = self.con.cursor()
-        cursor.execute(self.__DB_INSERT_SOIL_MOISTURE, (sensor_id, value,\
-                                                   timestamp))
+        cursor.execute(self.__DB_INSERT_SOIL_MOISTURE, (sensor_id, value, timestamp))
         self.con.commit()
 
     def get_soil_moisture(self, sensor_id, start_datetime=datetime.datetime.now(),\
