@@ -38,5 +38,6 @@ class Set_Threshold ( Command ):
         self.threshold = param
 
     def run( self ):
+        self.logger.debug("set moisture threshold :" + self.threshold)
         self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_MOISTURE_GUARD] = self.threshold
         

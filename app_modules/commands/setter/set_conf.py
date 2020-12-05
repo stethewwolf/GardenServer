@@ -34,9 +34,10 @@ class Set_conf ( Command ):
 
     def __init__( self, param = None ):
         super().__init__( )
-        self.logger = LoggerFactory.getLogger( str( self.__class__ ))
         self.config_file = param
 
     def run( self ):
+        logger = LoggerFactory.getLogger( str( self.__class__ ))
+        logger.debug("using conf file:" + self.config_file)
         SingleConfig.loadConfig( self.config_file )
         

@@ -34,8 +34,10 @@ class Set_Baud_Rate ( Command ):
 
     def __init__( self, param = None ):
         super().__init__( )
-        self.logger = LoggerFactory.getLogger( str( self.__class__ ))
         self.baud_rate = param
 
     def run(self):
-        self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_BAUD_RATE] = self.baud_rate
+        logger = LoggerFactory.getLogger( str( self.__class__ ))
+        logger.debug("using baud rate:" + self.baud_rate)
+        cfg = SingleConfig.getConfig()
+        cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_BAUD_RATE] = self.baud_rate

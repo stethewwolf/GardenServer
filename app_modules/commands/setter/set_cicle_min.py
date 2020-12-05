@@ -34,9 +34,11 @@ class Set_Cicle_Min ( Command ):
 
     def __init__( self, param = None ):
         super().__init__( )
-        self.logger = LoggerFactory.getLogger( str( self.__class__ ))
         self.cicle_min = param
 
     def run( self ):
-        self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_SLEEP_MIN] = self.cicle_min
+        logger = LoggerFactory.getLogger( str( self.__class__ ))
+        cfg = SingleConfig.getConfig()
+        logger.debug("set cycle min:" + self.cicle_min)
+        cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_SLEEP_MIN] = self.cicle_min
         

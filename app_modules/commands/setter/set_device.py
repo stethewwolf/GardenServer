@@ -34,8 +34,10 @@ class Set_Device ( Command ):
 
     def __init__( self, param = None ):
         super().__init__( )
-        self.logger = LoggerFactory.getLogger( str( self.__class__ ))
         self.device_path = param
 
     def run( self ):
-        self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_SERIAL] = self.device_path
+        logger = LoggerFactory.getLogger( str( self.__class__ ))
+        cfg = SingleConfig.getConfig()
+        logger.debug("set serial device:" + self.device_path)
+        cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_SERIAL] = self.device_path

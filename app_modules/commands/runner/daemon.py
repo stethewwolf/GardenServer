@@ -29,7 +29,7 @@ from app_modules.garden_server import Garden_Controller_Interface
 import time
 
 class Daemon():
-    short_arg   = 'd'
+    short_arg   = 'D'
     long_arg    = 'daemon'
     cmd_help    = 'Run application in daemon mode, in this mode the \
             application will compare the current soil moisture and if less then\
@@ -38,25 +38,25 @@ class Daemon():
     cmd_action  = 'store_true'
 
     def __init__(self, param=None):
-        self.cfg = SingleConfig.getConfig()
-        self.gci = Garden_Controller_Interface()
+        pass
 
-    def run( self ):
+    def run(self):
+        cfg = SingleConfig.getConfig()
+        gci = Garden_Controller_Interface()
+
         while True:
-            soil_mositure_s1 = self.gci.get_soil_moiusture(1)
-            soil_mositure_s2 = self.gci.get_soil_moiusture(2)
-            light = self.gci.get_light()
-            air_temperature = self.gci.get_temperature()
-            air_moisture = self.gci.get_air_moisture()
+            soil_mositure = gci.get_soil_moiusture()
+            light = gci.get_light()
+            air_temperature = gci.get_temperature()
+            air_moisture = gci.get_air_moisture()
             
-            soil_moisture_guard = int(self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_MOISTURE_GUARD])
+            soil_moisture_guard = int(cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_MOISTURE_GUARD])
 
-            if (soil_mositure_s1 <= soil_moisture_guard) or \
-               (soil_mositure_s2 < soil_moisture_guard):
-                print("start pump, watering for "+self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_WATERING_SEC]+" sec")
-                self.gci.set_pump_on()
-                time.sleep(int(self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_WATERING_SEC]))
-                self.gci.set_pump_off()
+            if soil_mositure <= soil_moisture_guard:
+                print("start pump, watering for "+cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_WATERING_SEC]+" sec")
+                gci.set_pump_on()
+                time.sleep(int(cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_WATERING_SEC]))
+                gci.set_pump_off()
                 print("stop pump")
 
-            time.sleep(int(self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_SLEEP_MIN])*60)
+            time.sleep(int(cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_SLEEP_MIN])*60)

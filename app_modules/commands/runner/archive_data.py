@@ -38,21 +38,19 @@ class Archive_Data():
 
     def __init__(self, param=None):
         self.cfg = SingleConfig.getConfig()
-        self.gci = Garden_Controller_Interface()
 
     def run( self ):
-        soil_mositure_s1 = self.gci.get_soil_moiusture(1)
-        soil_mositure_s2 = self.gci.get_soil_moiusture(2)
-        light = self.gci.get_light()
-        air_temperature = self.gci.get_temperature()
-        air_moisture = self.gci.get_air_moisture()
+        gci = Garden_Controller_Interface()
+        soil_mositure = gci.get_soil_moiusture()
+        light = gci.get_light()
+        air_temperature = gci.get_temperature()
+        air_moisture = gci.get_air_moisture()
         soil_moisture_guard = int(self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_MOISTURE_GUARD])
 
         print("=======================")
         print('Air temperature : {} C'.format(air_temperature))
         print('Air moisture : {} %'.format(air_moisture))
         print('Light idx ( 0 dark - 100 full light) : {}'.format(light))
-        print('Soil moisture sensor 1 : {}'.format(soil_mositure_s1))
-        print('Soil moisture sensor 2 : {}'.format(soil_mositure_s2))
+        print('Soil moisture sensor : {}'.format(soil_mositure))
         print('Soil moisture thresold : {}'.format(soil_moisture_guard))
         print("=======================")

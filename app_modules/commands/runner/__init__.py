@@ -25,7 +25,8 @@ __all__ = [
     'Monitor',
     'Pump_On',
     'Pump_Off',
-    'Archive_Data'
+    'Archive_Data',
+    'Daemon'
     ]
 
 # deprecated to keep older scripts who import this from breaking
@@ -34,6 +35,7 @@ from app_modules.commands.runner.monitor   import Monitor
 from app_modules.commands.runner.pump_on   import Pump_On
 from app_modules.commands.runner.pump_off   import Pump_Off
 from app_modules.commands.runner.archive_data   import Archive_Data
+from app_modules.commands.runner.daemon   import Daemon
 
 
 

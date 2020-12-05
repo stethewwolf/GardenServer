@@ -22,7 +22,7 @@ class Database_Interface():
         self.__DB_CREATE_TABLE_AIR_MOISTURE = 'CREATE TABLE  IF NOT EXISTS `air_moisture` ( `id` INTEGER PRIMARY KEY\
                 AUTOINCREMENT, `moisture` FLOAT, `datetime` TEXT )'
         self.__DB_CREATE_TABLE_SOIL_MOISTURE = 'CREATE TABLE  IF NOT EXISTS `soil_moisture` ( `id` INTEGER PRIMARY KEY\
-                AUTOINCREMENT, `moisture` FLOAT, `datetime` TEXT, `sensor_id` INTEGER  )'
+                AUTOINCREMENT, `moisture` FLOAT, `datetime` TEXT )'
         self.__DB_CREATE_TABLE_LIGHT = 'CREATE TABLE  IF NOT EXISTS `light` ( `id` INTEGER PRIMARY KEY\
                 AUTOINCREMENT, `light` FLOAT, `datetime` TEXT )'
         self.__DB_CREATE_TABLE_PUMP_STATUS = 'CREATE TABLE  IF NOT EXISTS `pump_status` ( `id` INTEGER PRIMARY KEY\
@@ -34,7 +34,7 @@ class Database_Interface():
         self.__DB_INSERT_AIR_MOISTURE = 'INSERT INTO `air_moisture`\
                 (`moisture`,`datetime`) VALUES (?,?);'
         self.__DB_INSERT_SOIL_MOISTURE = 'INSERT INTO `soil_moisture`\
-                (`sensor_id`, `moisture`,`datetime`) VALUES (?,?,?);'
+                (`moisture`,`datetime`) VALUES (?,?);'
         self.__DB_INSERT_LIGHT = 'INSERT INTO `light`\
                 (`light`,`datetime`) VALUES (?,?);'
         self.__DB_INSERT_PUMP_STATUS = 'INSERT INTO `pump_status`\
@@ -44,7 +44,7 @@ class Database_Interface():
         self.__DB_GET_AIR_MOISTURE = 'SELECT moisture,datetime from `air_moisture`\
                 WHERE datetime >= ? and datetime<= ?;'
         self.__DB_GET_SOIL_MOISTURE = 'SELECT moisture,datetime from `soil_moisture`\
-                WHERE sensor_id == ? AND datetime >= ? AND datetime<= ?;'
+                WHERE AND datetime >= ? AND datetime<= ?;'
         self.__DB_GET_LIGHT = 'SELECT light,datetime from `light`\
                 WHERE datetime >= ? AND datetime<= ?;'
         self.__DB_GET_PUMP_STATUS = 'SELECT new_status,datetime from `pump_status`\
@@ -94,16 +94,16 @@ class Database_Interface():
 
         return [ (float(row[0]),datetime.datetime(row[1])) for row in cursor.fetchall()]
 
-    def add_soil_moisture(self, sensor_id, value):
+    def add_soil_moisture(self, value):
         timestamp = datetime.datetime.now()
         cursor = self.con.cursor()
-        cursor.execute(self.__DB_INSERT_SOIL_MOISTURE, (sensor_id, value, timestamp))
+        cursor.execute(self.__DB_INSERT_SOIL_MOISTURE, (value, timestamp))
         self.con.commit()
 
-    def get_soil_moisture(self, sensor_id, start_datetime=datetime.datetime.now(),\
+    def get_soil_moisture(self, start_datetime=datetime.datetime.now(),\
                             end_datetime=datetime.datetime.now()):
         cursor = self.con.cursor()
-        cursor.execute(self.__DB_GET_SOIL_MOISTURE, (sensor_id,start_datetime,end_datetime))
+        cursor.execute(self.__DB_GET_SOIL_MOISTURE, (start_datetime,end_datetime))
 
         return [ (float(row[0]),datetime.datetime(row[1])) for row in cursor.fetchall()]
 

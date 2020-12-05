@@ -1,0 +1,26 @@
+#   BeerWare License
+#   ================
+#   en :  
+#   author: Stefano Prina < stefano-prina at outlook dot it >
+#   Version : 2.0
+#   
+#   This software is beerware.
+#   
+#   If we meet, you owe me a beer. Maybe two. Or even three.
+#   You can redistribute this software for free as you want, you can even make money from
+#   it if you need, but in this last case you will have to inform and ask permission to the author.
+#   You will always have to attach this license to the software, to tell others
+#   who made it, and to respect the author's name for centuries and centuries.
+#
+#   it :
+#   Autori: Stefano Prina < stefano-prina at outlook dot it >
+#   Version : 2.0
+#
+#   Questo sowftware è rilasciato sotto i termini della beerware
+#   Se ci dovessimo mai incontrare mi dovrai offrire una birra. Forse due o anche tre.
+#   Questo software può essere ridistribuito gratis come preferisci, 
+#   può anche usato per scopi commerciali se serve, ma in questo ultimocaso
+#   è necessario informare e chiedere il permesso all'autore.
+#   Questa licenza dovrà essere comunque allegata al software questa licenza , per menzionare gli'autore dello stesso al fine di
+# ricordarlo e rispettarlo nei secoli dei secoli.
+

@@ -40,7 +40,8 @@ class CommandLine_Parser( object ):
             Monitor,
             Pump_On,
             Pump_Off,
-            Archive_Data
+            Archive_Data,
+            Daemon
             ]
 
         self.scl = [
@@ -96,12 +97,13 @@ class CommandLine_Parser( object ):
         command_list.append( Set_env() )
 
         # parse command line
-        self.logger.debug('parse starts')
+        self.logger.debug('parse start')
 
         args = self.parser.parse_args()
 
         # check if conf file is passed
         if getattr( args, Set_conf.long_arg.replace("-","_") ) :
+            self.logger.debug("passed option --" + Set_conf.long_arg)
             command_list.append( Set_conf( getattr( args, Set_conf.long_arg.replace("-","_") ) ) )
 
         for cmd in self.scl:
