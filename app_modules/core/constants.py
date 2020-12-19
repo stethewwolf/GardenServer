@@ -54,3 +54,28 @@ DEFAULT_WATERING_SEC = "120"
 
 CONF_MOISTURE_GUARD = "moisture-guard"
 DEFAULT_MOISTURE_GUARD = "20"
+
+CONF_MQTT_ENABLED = "mqtt-enabled"
+DEFAULT_MQTT_ENABLED = "false"
+
+CONF_MQTT_SERVER = "mqtt-server"
+DEFAULT_MQTT_SERVER = "127.0.0.1"
+
+CONF_MQTT_PORT = "mqtt-port"
+DEFAULT_MQTT_PORT = "1883"
+
+CONF_MQTT_DEVICEID = "mqtt-device-id"
+DEFAULT_MQTT_DEVICEID = "gardenserver"
+
+CONF_MQTT_TEMPERATURE_TOPIC = "temperature-topic"
+DEFAULT_MQTT_TEMPERATURE_TOPIC = "external_temperature"
+
+CONF_MQTT_AIR_HUMIDITY_TOPIC = "air-humidity-topic"
+DEFAULT_MQTT_AIR_HUMIDITY_TOPIC = "external_humidity"
+
+CONF_MQTT_SOIL_MOISTURE_TOPIC = "soil-moisture-topic"
+DEFAULT_MQTT_SOIL_MOISTURE_TOPIC = "soil_moisture"
+
+CONF_MQTT_LIGHT_TOPIC = "light-topic"
+DEFAULT_MQTT_LIGHT_TOPIC = "external_light"
+

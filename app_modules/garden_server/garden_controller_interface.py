@@ -2,6 +2,7 @@
 
 import serial, time
 from app_modules.core import AppDBIface, SingleConfig, AppConstants, LoggerFactory
+from app_modules.core.mqtt import MQTT_Service
 
 class Garden_Controller_Interface():
     """ GardenControllerInterface """
@@ -13,9 +14,11 @@ class Garden_Controller_Interface():
         self.dbi = AppDBIface.get_instance()
         self.logger = LoggerFactory.getLogger(str(self.__class__ ))
 
-        cfg = SingleConfig.getConfig()
-        device = cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_SERIAL] 
-        baud_rate = cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_BAUD_RATE] 
+        self.cfg = SingleConfig.getConfig()[AppConstants.CONF_TAG_APP]
+        device = self.cfg[AppConstants.CONF_SERIAL]
+        baud_rate = self.cfg[AppConstants.CONF_BAUD_RATE]
+        self.mqtts = MQTT_Service()
+
         self.sec2sleep = 1
 
         self.ser = serial.Serial(device, baud_rate)
@@ -30,6 +33,7 @@ class Garden_Controller_Interface():
         if not self.check_fw():
             self.logger.error("Controller version not supported, please update and try again")
             raise Exception("Controller version not supported, please update and try again")
+
 
     def check_fw(self):
         check = False
@@ -61,6 +65,10 @@ class Garden_Controller_Interface():
         value = self.ser.readline()
         value = float(value.decode())
         self.dbi.add_air_temperature(value)
+
+        if self.cfg[AppConstants.CONF_MQTT_ENABLED].lower() == "true" :
+            self.mqtts.pub(self.cfg[AppConstants.CONF_MQTT_TEMPERATURE_TOPIC],value)
+
         return value
 
     def get_air_moisture(self):
@@ -71,6 +79,10 @@ class Garden_Controller_Interface():
         value = self.ser.readline()
         value = float(value.decode())
         self.dbi.add_air_moisture(value)
+
+        if self.cfg[AppConstants.CONF_MQTT_ENABLED].lower() == "true" :
+            self.mqtts.pub(self.cfg[AppConstants.CONF_MQTT_AIR_HUMIDITY_TOPIC],value)
+
         return value
 
     def get_light(self):
@@ -81,6 +93,10 @@ class Garden_Controller_Interface():
         value = self.ser.readline()
         value = float(value.decode())
         self.dbi.add_light(value)
+
+        if self.cfg[AppConstants.CONF_MQTT_ENABLED].lower() == "true" :
+            self.mqtts.pub(self.cfg[AppConstants.CONF_MQTT_LIGHT_TOPIC],value)
+
         return value
 
     def get_soil_moiusture(self):
@@ -93,6 +109,10 @@ class Garden_Controller_Interface():
         value = self.ser.readline()
         value = float(value.decode())
         self.dbi.add_soil_moisture(value)
+
+        if self.cfg[AppConstants.CONF_MQTT_ENABLED].lower() == "true" :
+            self.mqtts.pub(self.cfg[AppConstants.CONF_MQTT_SOIL_MOISTURE_TOPIC],value)
+
         return value
 
     def get_pump_status(self):

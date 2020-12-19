@@ -25,7 +25,7 @@
 
 from app_modules.core import LoggerFactory
 from app_modules.core import SingleConfig
-from app_modules.core import AppConstants
+from app_modules.core.constants import *
 from app_modules.commands.command import Command
 from app_modules.core import AppDBIface
 
@@ -41,7 +41,7 @@ class Set_env( Command ):
     def __init__( self, param  = None ):
         super().__init__( )
         self.logger = LoggerFactory.getLogger( str( self.__class__ ))
-        self.cfg = SingleConfig.getConfig()
+        self.cfg = SingleConfig.getConfig()[CONF_TAG_APP]
         self.dbi = AppDBIface.get_instance()
 
     def run( self ):
@@ -55,20 +55,28 @@ class Set_env( Command ):
         self.dbi.open()
 
     def init_app_conf(self):
-        self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_BAUD_RATE] = AppConstants.DEFAULT_BAUD_RATE
-        self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_SERIAL] = AppConstants.DEFAULT_SERIAL
-        self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_SLEEP_MIN] = AppConstants.DEFAULT_SLEEP_MIN
-        self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_WATERING_SEC] = AppConstants.DEFAULT_WATERING_SEC
-        self.cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_MOISTURE_GUARD] = AppConstants.DEFAULT_MOISTURE_GUARD
+        self.cfg[CONF_BAUD_RATE] = DEFAULT_BAUD_RATE
+        self.cfg[CONF_SERIAL] = DEFAULT_SERIAL
+        self.cfg[CONF_SLEEP_MIN] = DEFAULT_SLEEP_MIN
+        self.cfg[CONF_WATERING_SEC] = DEFAULT_WATERING_SEC
+        self.cfg[CONF_MOISTURE_GUARD] = DEFAULT_MOISTURE_GUARD
+        self.cfg[CONF_MQTT_ENABLED] = DEFAULT_MQTT_ENABLED
+        self.cfg[CONF_MQTT_SERVER] = DEFAULT_MQTT_SERVER
+        self.cfg[CONF_MQTT_PORT] = DEFAULT_MQTT_PORT
+        self.cfg[CONF_MQTT_DEVICEID] = DEFAULT_MQTT_DEVICEID
+        self.cfg[CONF_MQTT_TEMPERATURE_TOPIC] = DEFAULT_MQTT_TEMPERATURE_TOPIC
+        self.cfg[CONF_MQTT_AIR_HUMIDITY_TOPIC] = DEFAULT_MQTT_AIR_HUMIDITY_TOPIC
+        self.cfg[CONF_MQTT_SOIL_MOISTURE_TOPIC] = DEFAULT_MQTT_SOIL_MOISTURE_TOPIC
+        self.cfg[CONF_MQTT_LIGHT_TOPIC] = DEFAULT_MQTT_LIGHT_TOPIC
 
     def home_app_mngr(self):
         # create app dir inside user home directory
-        if not os.path.exists(AppConstants.APP_HOME):
-            os.makedirs(AppConstants.APP_HOME)
+        if not os.path.exists(APP_HOME):
+            os.makedirs(APP_HOME)
             self.logger.debug("created app home dir")
         else:
             self.logger.debug("app home dir yet present")
 
-        if not os.path.exists(AppConstants.CONF_FILE):
-            SingleConfig.save(self.cfg)
+        if not os.path.exists(CONF_FILE):
+            SingleConfig.save(SingleConfig.getConfig())
             self.logger.debug("created conf file")
