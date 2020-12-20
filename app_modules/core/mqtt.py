@@ -49,7 +49,7 @@ class MQTT_Service(object):
     def pub(self, tag, value):
         o_message = {
             'id' : self.client_id,
-            'value': value
+            'value': value,
             'tag' : tag
         }
         s_message = json.dumps(o_message)
