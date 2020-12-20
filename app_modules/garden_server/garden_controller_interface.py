@@ -67,7 +67,7 @@ class Garden_Controller_Interface():
         self.dbi.add_air_temperature(value)
 
         if self.cfg[AppConstants.CONF_MQTT_ENABLED].lower() == "true" :
-            self.mqtts.pub(self.cfg[AppConstants.CONF_MQTT_TEMPERATURE_TOPIC],value)
+            self.mqtts.pub(self.cfg[AppConstants.CONF_MQTT_TEMPERATURE_TAG],value)
 
         return value
 
@@ -81,7 +81,7 @@ class Garden_Controller_Interface():
         self.dbi.add_air_moisture(value)
 
         if self.cfg[AppConstants.CONF_MQTT_ENABLED].lower() == "true" :
-            self.mqtts.pub(self.cfg[AppConstants.CONF_MQTT_AIR_HUMIDITY_TOPIC],value)
+            self.mqtts.pub(self.cfg[AppConstants.CONF_MQTT_AIR_HUMIDITY_TAG],value)
 
         return value
 
@@ -95,7 +95,7 @@ class Garden_Controller_Interface():
         self.dbi.add_light(value)
 
         if self.cfg[AppConstants.CONF_MQTT_ENABLED].lower() == "true" :
-            self.mqtts.pub(self.cfg[AppConstants.CONF_MQTT_LIGHT_TOPIC],value)
+            self.mqtts.pub(self.cfg[AppConstants.CONF_MQTT_LIGHT_TAG],value)
 
         return value
 
@@ -111,7 +111,7 @@ class Garden_Controller_Interface():
         self.dbi.add_soil_moisture(value)
 
         if self.cfg[AppConstants.CONF_MQTT_ENABLED].lower() == "true" :
-            self.mqtts.pub(self.cfg[AppConstants.CONF_MQTT_SOIL_MOISTURE_TOPIC],value)
+            self.mqtts.pub(self.cfg[AppConstants.CONF_MQTT_SOIL_MOISTURE_TAG],value)
 
         return value
 
@@ -130,7 +130,7 @@ class Garden_Controller_Interface():
         self.dbi.add_pump_status(value.decode())
 
         if self.cfg[AppConstants.CONF_MQTT_ENABLED].lower() == "true" :
-            self.mqtts.pub(self.cfg[AppConstants.CONF_MQTT_WATERING_TOPIC],"on")
+            self.mqtts.pub(self.cfg[AppConstants.CONF_MQTT_WATERING_TAG],"on")
 
     def set_pump_off(self):
         """ set_pump_off """
@@ -140,7 +140,7 @@ class Garden_Controller_Interface():
         self.dbi.add_pump_status(value.decode())
 
         if self.cfg[AppConstants.CONF_MQTT_ENABLED].lower() == "true" :
-            self.mqtts.pub(self.cfg[AppConstants.CONF_MQTT_WATERING_TOPIC],"off")
+            self.mqtts.pub(self.cfg[AppConstants.CONF_MQTT_WATERING_TAG],"off")
 
     def close(self):
         """ close """
