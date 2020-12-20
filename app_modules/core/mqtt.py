@@ -26,6 +26,11 @@ import paho.mqtt.client as mqtt
 from app_modules.core import SingleConfig, AppConstants, LoggerFactory
 import time, json
 
+def default_on_message(client, userdata, message):
+    logger = LoggerFactory.getLogger("default_on_message")
+    logger.debug("got message : "+str(message.payload.decode("utf-8")))
+
+
 class MQTT_Service(object):
     def __init__(self):
         self.logger = LoggerFactory.getLogger(str(self.__class__ ))
@@ -39,12 +44,14 @@ class MQTT_Service(object):
             self.client = mqtt.Client(self.client_id)
             self.client.enable_logger(self.logger)
             self.client.connect(host=self.brocker_host, port=int(self.brocker_port))
-            self.client.on_message = self.on_message
-            self.subscribe(self.topic,0)
-
             self.logger.debug("connected with mqtt://{}:{} as {}".format(self.brocker_host, self.brocker_port, self.client_id))
         except :
             self.logger.error("failed to connect with mqtt://{}:{} as {}".format(self.brocker_host,self.brocker_port, self.client_id))
+
+
+        self.client.on_message = self.on_message
+        self.subscribe(self.topic,0)
+
 
     def pub(self, tag, value):
         o_message = {
@@ -69,9 +76,5 @@ class MQTT_Service(object):
             self.logger.debug("disconnected from mqtt://{}:{}".format(brocker_host,brocker_port))
         except :
             self.logger.error("failed to disconnect from mqtt://{}:{}".format(self.brocker_host,self.brocker_port))
-
-def default_on_message(client, userdata, message):
-    logger = LoggerFactory.getLogger("default_on_message")
-    logger.debug("got message : "+str(message.payload.decode("utf-8")))
 
          
