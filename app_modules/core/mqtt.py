@@ -33,7 +33,7 @@ class MQTT_Service(object):
         self.brocker_host = SingleConfig.getConfig()[AppConstants.CONF_TAG_APP][AppConstants.CONF_MQTT_SERVER]
         self.brocker_port = SingleConfig.getConfig()[AppConstants.CONF_TAG_APP][AppConstants.CONF_MQTT_PORT]
         self.topic = SingleConfig.getConfig()[AppConstants.CONF_TAG_APP][AppConstants.CONF_MQTT_TOPIC]
-        self.on_message = self.default_on_message
+        self.on_message = default_on_message
 
         try:
             self.client = mqtt.Client(self.client_id)
