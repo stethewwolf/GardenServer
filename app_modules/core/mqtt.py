@@ -50,7 +50,7 @@ class MQTT_Service(object):
 
 
         self.client.on_message = self.on_message
-        self.subscribe(self.topic,0)
+        self.client.subscribe(self.topic,0)
 
 
     def pub(self, tag, value):
