@@ -64,10 +64,7 @@ class Set_env( Command ):
         self.cfg[CONF_MQTT_SERVER] = DEFAULT_MQTT_SERVER
         self.cfg[CONF_MQTT_PORT] = DEFAULT_MQTT_PORT
         self.cfg[CONF_MQTT_DEVICEID] = DEFAULT_MQTT_DEVICEID
-        self.cfg[CONF_MQTT_TEMPERATURE_TOPIC] = DEFAULT_MQTT_TEMPERATURE_TOPIC
-        self.cfg[CONF_MQTT_AIR_HUMIDITY_TOPIC] = DEFAULT_MQTT_AIR_HUMIDITY_TOPIC
-        self.cfg[CONF_MQTT_SOIL_MOISTURE_TOPIC] = DEFAULT_MQTT_SOIL_MOISTURE_TOPIC
-        self.cfg[CONF_MQTT_LIGHT_TOPIC] = DEFAULT_MQTT_LIGHT_TOPIC
+        self.cfg[CONF_MQTT_TOPIC] = DEFAULT_MQTT_TOPIC
 
     def home_app_mngr(self):
         # create app dir inside user home directory

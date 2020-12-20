@@ -32,28 +32,34 @@ class MQTT_Service(object):
         self.client_id = SingleConfig.getConfig()[AppConstants.CONF_TAG_APP][AppConstants.CONF_MQTT_DEVICEID]
         self.brocker_host = SingleConfig.getConfig()[AppConstants.CONF_TAG_APP][AppConstants.CONF_MQTT_SERVER]
         self.brocker_port = SingleConfig.getConfig()[AppConstants.CONF_TAG_APP][AppConstants.CONF_MQTT_PORT]
+        self.topic = SingleConfig.getConfig()[AppConstants.CONF_TAG_APP][AppConstants.CONF_MQTT_TOPIC]
+        self.on_message = self.default_on_message
+
         try:
             self.client = mqtt.Client(self.client_id)
             self.client.enable_logger(self.logger)
             self.client.connect(host=self.brocker_host, port=int(self.brocker_port))
+            self.client.on_message = self.on_message
+            self.subscribe(self.topic,0)
 
             self.logger.debug("connected with mqtt://{}:{} as {}".format(self.brocker_host, self.brocker_port, self.client_id))
         except :
             self.logger.error("failed to connect with mqtt://{}:{} as {}".format(self.brocker_host,self.brocker_port, self.client_id))
 
-    def pub(self, topic, value):
+    def pub(self, tag, value):
         o_message = {
             'id' : self.client_id,
             'value': value
+            'tag' : tag
         }
         s_message = json.dumps(o_message)
 
-        self.logger.debug("try publish value [{}] on topic [{}]".format(s_message,topic))
+        self.logger.debug("try publish value [{}] on topic [{}]".format(s_message,self.topic))
 
         try:
             self.client.publish(topic,s_message)
             time.sleep(1)
-            self.logger.debug("published value [{}] on topic [{}]".format(s_message,topic))
+            self.logger.debug("published value [{}] on topic [{}]".format(s_message,self.topic))
         except :
             self.logger.error("failed to publish with mqtt://{}:{}".format(self.brocker_host,self.brocker_port))
 
@@ -64,5 +70,8 @@ class MQTT_Service(object):
         except :
             self.logger.error("failed to disconnect from mqtt://{}:{}".format(self.brocker_host,self.brocker_port))
 
+def default_on_message(client, userdata, message):
+    logger = LoggerFactory.getLogger("default_on_message")
+    logger.debug("got message : "+str(message.payload.decode("utf-8")))
 
          
