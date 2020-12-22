@@ -48,7 +48,9 @@ class CommandLine_Parser( object ):
             Set_Baud_Rate,
             Set_Device,
             Set_Time2Water,
-            Set_Cicle_Min
+            Set_Cicle_Min,
+            Set_Mqtt_Server,
+            Set_Mqtt_Port
             ]
         # regist set_conf
         self.parser.add_argument(

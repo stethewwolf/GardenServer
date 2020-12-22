@@ -26,7 +26,9 @@ __all__ = [
     'Set_Baud_Rate',
     'Set_Device',
     'Set_Cicle_Min',
-    'Set_Time2Water'
+    'Set_Time2Water',
+    'Set_Mqtt_Server',
+    'Set_Mqtt_Port'
     ]
 
 # deprecated to keep older scripts who import this from breaking
@@ -37,4 +39,8 @@ from app_modules.commands.setter.set_device import Set_Device
 from app_modules.commands.setter.set_cicle_min import Set_Cicle_Min
 from app_modules.commands.setter.set_time_to_watering import Set_Time2Water
 from app_modules.commands.setter.set_threshold import Set_Threshold
+from app_modules.commands.setter.set_mqtt_server import Set_Mqtt_Server
+from app_modules.commands.setter.set_mqtt_port import Set_Mqtt_Port
+
+
 

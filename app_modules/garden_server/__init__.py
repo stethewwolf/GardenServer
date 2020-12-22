@@ -28,5 +28,4 @@ __all__ = [
     ]
 
 # deprecated to keep older scripts who import this from breaking
-from app_modules.garden_server.garden_controller_interface   import \
-        Garden_Controller_Interface
+from app_modules.garden_server.garden_controller_interface import Garden_Controller_Interface
