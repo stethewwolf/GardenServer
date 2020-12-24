@@ -24,8 +24,10 @@
 
 
 __all__ = [
-    'Garden_Controller_Interface'
+    'Garden_Controller_Interface',
+    'Fake_Controller_Interface'
     ]
 
 # deprecated to keep older scripts who import this from breaking
 from app_modules.garden_server.garden_controller_interface import Garden_Controller_Interface
+from app_modules.garden_server.fake_controller_interface import Fake_Controller_Interface

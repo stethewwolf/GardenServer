@@ -22,50 +22,52 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from app_modules.core import LoggerFactory, SingleConfig, AppConstants
+from app_modules.core import LoggerFactory, SingleConfig, AppConstants, AppDBIface
 import app_modules.core.mqtt as Mqtt
-from app_modules.garden_server import Garden_Controller_Interface
+from app_modules.garden_server import Fake_Controller_Interface
 import time, json
 
-class Daemon():
-    short_arg   = 'D'
-    long_arg    = 'daemon'
-    cmd_help    = 'Run application in daemon mode, in this mode the \
-            application will compare the current soil moisture and if less then\
-            treshold it will power on the pump periodically'
+class Daemon_Test():
+    short_arg   = ''
+    long_arg    = 'daemon-test'
+    cmd_help    = 'Run application in daemon test mode, not require controller connected'
     cmd_type    = None
     cmd_action  = 'store_true'
 
     def __init__(self, param=None):
         self.logger = LoggerFactory.getLogger(str(self.__class__ ))
+        pass
 
     def run(self):
         cfg = SingleConfig.getConfig()
-        gci = Garden_Controller_Interface()
         mqtt = Mqtt.get_instance()
+        fgi = Fake_Controller_Interface()
 
         mqtt.client.on_message=parse_message
 
         while True:
-            soil_mositure = gci.get_soil_moiusture()
-            light = gci.get_light()
-            air_temperature = gci.get_temperature()
-            air_moisture = gci.get_air_moisture()
+            soil_mositure = fgi.get_soil_moiusture()
+            light = fgi.get_light()
+            air_temperature = fgi.get_temperature()
+            air_moisture = fgi.get_air_moisture()
             
             soil_moisture_guard = int(cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_MOISTURE_GUARD])
 
             if soil_mositure <= soil_moisture_guard:
                 self.logger.info("start pump, watering for "+cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_WATERING_SEC]+" sec")
-                gci.set_pump_on()
+                fgi.set_pump_on()
                 time.sleep(int(cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_WATERING_SEC]))
-                gci.set_pump_off()
                 self.logger.info("stop pump")
+                fgi.set_pump_off()
 
             time.sleep(int(cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_SLEEP_MIN])*60)
 
 def parse_message(client, userdata, message):
     logger = LoggerFactory.getLogger("daemon_parse_message")
     s_message = str(message.payload.decode("utf-8"))
+    dbi = AppDBIface.Database_Interface()
+    dbi.open()
+ 
 
     logger.debug("got message {}".format(s_message))
 
@@ -81,13 +83,13 @@ def parse_message(client, userdata, message):
             if o_message['tag'] == AppConstants.MQTT_WATERING_CMD_TAG:
                 manage_watering_cmd(o_message['value'])
             elif o_message['tag'] == AppConstants.MQTT_AIR_HUMIDITY_TAG:
-                pass
+                dbi.add_air_moisture(o_message['value'],o_message['id'])
             elif o_message['tag'] == AppConstants.MQTT_TEMPERATURE_TAG:
-                pass
+                dbi.add_air_temperature(o_message['value'],o_message['id'])
             elif o_message['tag'] == AppConstants.MQTT_SOIL_MOISTURE_TAG:
-                pass
-            elif o_message['tag'] == AppConstants.MQTT_LIGHT_TAG_TAG:
-                pass
+                dbi.add_soil_moisture(o_message['value'],o_message['id'])
+            elif o_message['tag'] == AppConstants.MQTT_LIGHT_TAG:
+                dbi.add_light(o_message['value'],o_message['id'])
             else:
                 logger.debug("message {} has unknown tag: ignored".format(s_message))
         else:
@@ -95,15 +97,19 @@ def parse_message(client, userdata, message):
     else:
         logger.warn("message {} is not well formed".format(s_message))
 
+    dbi.close()
+
 def manage_watering_cmd(value):
     logger = LoggerFactory.getLogger("manage_watering_cmd")
-    gci = Garden_Controller_Interface() 
+    fgi = Fake_Controller_Interface()
+
     if value.lower() == 'off':
-        gci.set_pump_off()
+        fci.set_pump_off()
     elif value.lower() == 'on':
-        gci.set_pump_on()
+        fci.set_pump_on()
     elif value.lower() == 'status':
-        gci.get_pump_status()
+        fci.get_pump_status()
     else:
         logger.warn("value {} has is unknown: ignored".format(value))
+
 

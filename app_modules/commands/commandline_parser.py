@@ -41,7 +41,8 @@ class CommandLine_Parser( object ):
             Pump_On,
             Pump_Off,
             Archive_Data,
-            Daemon
+            Daemon,
+            Daemon_Test
             ]
 
         self.scl = [

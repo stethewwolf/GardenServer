@@ -16,6 +16,7 @@ class Garden_Controller_Interface():
         self.logger = LoggerFactory.getLogger(str(self.__class__ ))
 
         self.cfg = SingleConfig.getConfig()[AppConstants.CONF_TAG_APP]
+        self.device_name = self.cfg[AppConstants.CONF_MQTT_DEVICEID]
         device = self.cfg[AppConstants.CONF_SERIAL]
         baud_rate = self.cfg[AppConstants.CONF_BAUD_RATE]
         self.mqtts = mqtt.get_instance()
@@ -64,7 +65,7 @@ class Garden_Controller_Interface():
 
         value = self.ser.readline()
         value = float(value.decode())
-        self.dbi.add_air_temperature(value)
+        self.dbi.add_air_temperature(value, self.device_name)
 
         if self.cfg[AppConstants.CONF_MQTT_ENABLED].lower() == "true" :
             self.mqtts.pub(AppConstants.MQTT_TEMPERATURE_TAG,value)
@@ -78,7 +79,7 @@ class Garden_Controller_Interface():
 
         value = self.ser.readline()
         value = float(value.decode())
-        self.dbi.add_air_moisture(value)
+        self.dbi.add_air_moisture(value, self.device_name)
 
         if self.cfg[AppConstants.CONF_MQTT_ENABLED].lower() == "true" :
             self.mqtts.pub(AppConstants.MQTT_AIR_HUMIDITY_TAG,value)
@@ -92,7 +93,7 @@ class Garden_Controller_Interface():
 
         value = self.ser.readline()
         value = float(value.decode())
-        self.dbi.add_light(value)
+        self.dbi.add_light(value, self.device_name)
 
         if self.cfg[AppConstants.CONF_MQTT_ENABLED].lower() == "true" :
             self.mqtts.pub(AppConstants.MQTT_LIGHT_TAG,value)
@@ -108,7 +109,7 @@ class Garden_Controller_Interface():
         value = 0
         value = self.ser.readline()
         value = float(value.decode())
-        self.dbi.add_soil_moisture(value)
+        self.dbi.add_soil_moisture(value, self.device_name)
 
         if self.cfg[AppConstants.CONF_MQTT_ENABLED].lower() == "true" :
             self.mqtts.pub(AppConstants.MQTT_SOIL_MOISTURE_TAG,value)
@@ -134,7 +135,7 @@ class Garden_Controller_Interface():
         self.ser.write(self.commands_map['pump_on'].encode())
         time.sleep(self.sec2sleep)
         value = self.ser.readline()
-        self.dbi.add_pump_status(value.decode())
+        self.dbi.add_pump_status(value.decode(), self.device_name)
 
         if self.cfg[AppConstants.CONF_MQTT_ENABLED].lower() == "true" :
             self.mqtts.pub(AppConstants.MQTT_WATERING_TAG,"on")
@@ -144,7 +145,7 @@ class Garden_Controller_Interface():
         self.ser.write(self.commands_map['pump_off'].encode())
         time.sleep(self.sec2sleep)
         value = self.ser.readline()
-        self.dbi.add_pump_status(value.decode())
+        self.dbi.add_pump_status(value.decode(), self.device_name)
 
         if self.cfg[AppConstants.CONF_MQTT_ENABLED].lower() == "true" :
             self.mqtts.pub(AppConstants.MQTT_WATERING_TAG,"off")
