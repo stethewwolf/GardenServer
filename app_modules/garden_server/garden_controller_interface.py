@@ -55,7 +55,7 @@ class Garden_Controller_Interface():
 
         value = self.ser.readline()
         value = int(value.decode())
-        self.dbi.add_air_temperature(value)
+        self.dbi.add_air_temperature(value,self.device_name)
         return value
 
     def get_temperature(self):
