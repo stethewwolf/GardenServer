@@ -43,8 +43,9 @@ class Daemon():
         cfg = SingleConfig.getConfig()
         gci = Garden_Controller_Interface()
         mqtt = Mqtt.get_instance()
+        m_parser = Mqtt.MQTT_Messages_Parser(gci)
 
-        mqtt.client.on_message=parse_message
+        mqtt.client.on_message=m_parser.parse_message
 
         while True:
             soil_mositure = gci.get_soil_moiusture()
@@ -62,48 +63,3 @@ class Daemon():
                 self.logger.info("stop pump")
 
             time.sleep(int(cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_SLEEP_MIN])*60)
-
-def parse_message(client, userdata, message):
-    logger = LoggerFactory.getLogger("daemon_parse_message")
-    s_message = str(message.payload.decode("utf-8"))
-
-    logger.debug("got message {}".format(s_message))
-
-    try: 
-        o_message = json.loads(s_message)
-    except:
-        logger.warn("message {} cannot be converted to json".format(s_message))
-        o_message = {}
-
-
-    if "id" in o_message:
-        if o_message['id'] != SingleConfig.getConfig()[AppConstants.CONF_TAG_APP][AppConstants.CONF_MQTT_DEVICEID]:
-            if o_message['tag'] == AppConstants.MQTT_WATERING_CMD_TAG:
-                manage_watering_cmd(o_message['value'])
-            elif o_message['tag'] == AppConstants.MQTT_AIR_HUMIDITY_TAG:
-                pass
-            elif o_message['tag'] == AppConstants.MQTT_TEMPERATURE_TAG:
-                pass
-            elif o_message['tag'] == AppConstants.MQTT_SOIL_MOISTURE_TAG:
-                pass
-            elif o_message['tag'] == AppConstants.MQTT_LIGHT_TAG_TAG:
-                pass
-            else:
-                logger.debug("message {} has unknown tag: ignored".format(s_message))
-        else:
-            logger.debug("message {} sent by myself: ignored".format(s_message))
-    else:
-        logger.warn("message {} is not well formed".format(s_message))
-
-def manage_watering_cmd(value):
-    logger = LoggerFactory.getLogger("manage_watering_cmd")
-    gci = Garden_Controller_Interface() 
-    if value.lower() == 'off':
-        gci.set_pump_off()
-    elif value.lower() == 'on':
-        gci.set_pump_on()
-    elif value.lower() == 'status':
-        gci.get_pump_status()
-    else:
-        logger.warn("value {} has is unknown: ignored".format(value))
-

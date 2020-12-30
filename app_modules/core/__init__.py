@@ -26,7 +26,9 @@ __all__ = [
     'mlogger',
     'config',
     'constants',
-    'AppDBIface'
+    'AppDBIface',
+    'MQTT_Service',
+    'MQTT_Messages_Parser'
     ]
 
 # deprecated to keep older scripts who import this from breaking
@@ -34,3 +36,5 @@ import app_modules.core.mlogger as LoggerFactory
 import app_modules.core.config as SingleConfig
 import app_modules.core.constants as AppConstants
 import app_modules.core.database as AppDBIface
+from   app_modules.core.mqtt import MQTT_Service
+from   app_modules.core.mqtt import MQTT_Messages_Parser

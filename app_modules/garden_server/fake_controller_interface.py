@@ -72,18 +72,24 @@ class Fake_Controller_Interface():
 
     def set_pump_on(self):
         """ set_pump_on """
+        l_dbi = AppDBIface.Database_Interface()
+        l_dbi.open()
+     
         self.fake_pump_status = 1
         value = self.fake_pump_status
-        self.dbi.add_pump_status(value, self.device_name)
+        l_dbi.add_pump_status(value, self.device_name)
 
         if self.cfg[AppConstants.CONF_MQTT_ENABLED].lower() == "true" :
             self.mqtts.pub(AppConstants.MQTT_WATERING_TAG,"on")
 
     def set_pump_off(self):
         """ set_pump_off """
+        l_dbi = AppDBIface.Database_Interface()
+        l_dbi.open()
+ 
         self.fake_pump_status = 0
         value = self.fake_pump_status
-        self.dbi.add_pump_status(value, self.device_name)
+        l_dbi.add_pump_status(value, self.device_name)
 
         if self.cfg[AppConstants.CONF_MQTT_ENABLED].lower() == "true" :
             self.mqtts.pub(AppConstants.MQTT_WATERING_TAG,"off")
