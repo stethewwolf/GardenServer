@@ -81,6 +81,7 @@ class Fake_Controller_Interface():
 
         if self.cfg[AppConstants.CONF_MQTT_ENABLED].lower() == "true" :
             self.mqtts.pub(AppConstants.MQTT_WATERING_TAG,"on")
+        l_dbi.close()
 
     def set_pump_off(self):
         """ set_pump_off """
@@ -93,6 +94,7 @@ class Fake_Controller_Interface():
 
         if self.cfg[AppConstants.CONF_MQTT_ENABLED].lower() == "true" :
             self.mqtts.pub(AppConstants.MQTT_WATERING_TAG,"off")
+        l_dbi.close()
 
     def close(self):
         """ close """

@@ -132,23 +132,29 @@ class Garden_Controller_Interface():
 
     def set_pump_on(self):
         """ set_pump_on """
+        l_dbi = AppDBIface.Database_Interface()
+        l_dbi.open()
         self.ser.write(self.commands_map['pump_on'].encode())
         time.sleep(self.sec2sleep)
         value = self.ser.readline()
-        self.dbi.add_pump_status(value.decode(), self.device_name)
+        l_dbi.add_pump_status(value.decode(), self.device_name)
 
         if self.cfg[AppConstants.CONF_MQTT_ENABLED].lower() == "true" :
             self.mqtts.pub(AppConstants.MQTT_WATERING_TAG,"on")
+        l_dbi.close()
 
     def set_pump_off(self):
         """ set_pump_off """
+        l_dbi = AppDBIface.Database_Interface()
+        l_dbi.open()
         self.ser.write(self.commands_map['pump_off'].encode())
         time.sleep(self.sec2sleep)
         value = self.ser.readline()
-        self.dbi.add_pump_status(value.decode(), self.device_name)
+        l_dbi.add_pump_status(value.decode(), self.device_name)
 
         if self.cfg[AppConstants.CONF_MQTT_ENABLED].lower() == "true" :
             self.mqtts.pub(AppConstants.MQTT_WATERING_TAG,"off")
+        l_dbi.close()
 
     def close(self):
         """ close """
