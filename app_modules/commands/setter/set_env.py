@@ -89,7 +89,6 @@ class Set_env( Command ):
         
         if CONF_WATERING_ENABLE not in self.cfg:
             self.cfg[CONF_WATERING_ENABLE] = DEFAULT_WATERING_ENABLE
-            print("!!!!!!!!!!!!!!!!!!")
 
     def home_app_mngr(self):
         # create app dir inside user home directory
