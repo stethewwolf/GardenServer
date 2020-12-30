@@ -131,11 +131,29 @@ class MQTT_Messages_Parser(object):
 
     def manage_cmd(self, value):
         if value.lower() == 'water_off':
-            self.gci.set_pump_off()
+            if SingleConfig.getConfig()[AppConstants.CONF_TAG_APP][AppConstants.CONF_WATERING_ENABLE].lower() == "true":
+                self.gci.set_pump_off()
+            else:
+                get_instance().pub(AppConstants.MQTT_WATERING_TAG,"disabled")
         elif value.lower() == 'water_on':
-            self.gci.set_pump_on()
+            if SingleConfig.getConfig()[AppConstants.CONF_TAG_APP][AppConstants.CONF_WATERING_ENABLE].lower() == "true":
+                self.gci.set_pump_on()
+            else:
+                get_instance().pub(AppConstants.MQTT_WATERING_TAG,"disabled")
         elif value.lower() == 'water_status':
-            self.gci.get_pump_status()
+            if SingleConfig.getConfig()[AppConstants.CONF_TAG_APP][AppConstants.CONF_WATERING_ENABLE].lower() == "true":
+                self.gci.get_pump_status()
+            else:
+                get_instance().pub(AppConstants.MQTT_WATERING_TAG,"disabled")
+        elif value.lower() == 'water_enable':
+            SingleConfig.getConfig()[AppConstants.CONF_TAG_APP][AppConstants.CONF_WATERING_ENABLE] = "true"
+            SingleConfig.save(SingleConfig.getConfig())
+            get_instance().pub(AppConstants.MQTT_WATERING_TAG,"enabled")
+        elif value.lower() == 'water_disable':
+            self.gci.set_pump_off()
+            SingleConfig.getConfig()[AppConstants.CONF_TAG_APP][AppConstants.CONF_WATERING_ENABLE] = "false"
+            SingleConfig.save(SingleConfig.getConfig())
+            get_instance().pub(AppConstants.MQTT_WATERING_TAG,"disabled")
         else:
             self.logger.warn("value {} has is unknown: ignored".format(value))
 

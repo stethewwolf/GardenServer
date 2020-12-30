@@ -55,11 +55,14 @@ class Daemon():
             
             soil_moisture_guard = int(cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_MOISTURE_GUARD])
 
-            if soil_mositure <= soil_moisture_guard:
-                self.logger.info("start pump, watering for "+cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_WATERING_SEC]+" sec")
-                gci.set_pump_on()
-                time.sleep(int(cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_WATERING_SEC]))
-                gci.set_pump_off()
-                self.logger.info("stop pump")
-
+            if cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_WATERING_ENABLE] == "true":
+                if soil_mositure <= soil_moisture_guard:
+                    self.logger.info("start pump, watering for "+cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_WATERING_SEC]+" sec")
+                    gci.set_pump_on()
+                    time.sleep(int(cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_WATERING_SEC]))
+                    gci.set_pump_off()
+                    self.logger.info("stop pump")
+            else:
+                self.logger.info("pump disabled")
+                
             time.sleep(int(cfg[AppConstants.CONF_TAG_APP][AppConstants.CONF_SLEEP_MIN])*60)

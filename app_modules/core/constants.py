@@ -70,6 +70,9 @@ DEFAULT_MQTT_DEVICEID = "gardenserver"
 CONF_MQTT_TOPIC = "garden-topic"
 DEFAULT_MQTT_TOPIC = "garden"
 
+CONF_WATERING_ENABLE = "watering-enable"
+DEFAULT_WATERING_ENABLE = "true"
+
 MQTT_TEMPERATURE_TAG = "air/temperature"
 
 MQTT_AIR_HUMIDITY_TAG = "air/humidity"

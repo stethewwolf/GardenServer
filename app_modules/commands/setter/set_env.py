@@ -41,11 +41,13 @@ class Set_env( Command ):
     def __init__( self, param  = None ):
         super().__init__( )
         self.logger = LoggerFactory.getLogger( str( self.__class__ ))
-        self.cfg = SingleConfig.getConfig()[CONF_TAG_APP]
+        SingleConfig.loadConfig
         self.dbi = AppDBIface.get_instance()
 
     def run( self ):
         # init configuration object
+        SingleConfig.loadConfig(CONF_FILE)
+        self.cfg = SingleConfig.getConfig()[CONF_TAG_APP]
         self.init_app_conf()
 
         # manage application folder
@@ -55,16 +57,39 @@ class Set_env( Command ):
         self.dbi.open()
 
     def init_app_conf(self):
-        self.cfg[CONF_BAUD_RATE] = DEFAULT_BAUD_RATE
-        self.cfg[CONF_SERIAL] = DEFAULT_SERIAL
-        self.cfg[CONF_SLEEP_MIN] = DEFAULT_SLEEP_MIN
-        self.cfg[CONF_WATERING_SEC] = DEFAULT_WATERING_SEC
-        self.cfg[CONF_MOISTURE_GUARD] = DEFAULT_MOISTURE_GUARD
-        self.cfg[CONF_MQTT_ENABLED] = DEFAULT_MQTT_ENABLED
-        self.cfg[CONF_MQTT_SERVER] = DEFAULT_MQTT_SERVER
-        self.cfg[CONF_MQTT_PORT] = DEFAULT_MQTT_PORT
-        self.cfg[CONF_MQTT_DEVICEID] = DEFAULT_MQTT_DEVICEID
-        self.cfg[CONF_MQTT_TOPIC] = DEFAULT_MQTT_TOPIC
+        if CONF_BAUD_RATE  not in self.cfg:
+            self.cfg[CONF_BAUD_RATE] = DEFAULT_BAUD_RATE
+
+        if CONF_SERIAL not in self.cfg:
+            self.cfg[CONF_SERIAL] = DEFAULT_SERIAL
+
+        if CONF_SLEEP_MIN not in self.cfg:
+            self.cfg[CONF_SLEEP_MIN] = DEFAULT_SLEEP_MIN
+
+        if CONF_WATERING_SEC not in self.cfg:
+            self.cfg[CONF_WATERING_SEC] = DEFAULT_WATERING_SEC
+
+        if CONF_MOISTURE_GUARD not in self.cfg:
+            self.cfg[CONF_MOISTURE_GUARD] = DEFAULT_MOISTURE_GUARD
+
+        if CONF_MQTT_ENABLED not in self.cfg:
+            self.cfg[CONF_MQTT_ENABLED] = DEFAULT_MQTT_ENABLED
+
+        if CONF_MQTT_SERVER not in self.cfg:
+            self.cfg[CONF_MQTT_SERVER] = DEFAULT_MQTT_SERVER
+
+        if CONF_MQTT_PORT not in self.cfg:
+            self.cfg[CONF_MQTT_PORT] = DEFAULT_MQTT_PORT
+
+        if CONF_MQTT_DEVICEID not in self.cfg:
+            self.cfg[CONF_MQTT_DEVICEID] = DEFAULT_MQTT_DEVICEID
+
+        if CONF_MQTT_TOPIC not in self.cfg:
+            self.cfg[CONF_MQTT_TOPIC] = DEFAULT_MQTT_TOPIC
+        
+        if CONF_WATERING_ENABLE not in self.cfg:
+            self.cfg[CONF_WATERING_ENABLE] = DEFAULT_WATERING_ENABLE
+            print("!!!!!!!!!!!!!!!!!!")
 
     def home_app_mngr(self):
         # create app dir inside user home directory
