@@ -154,6 +154,16 @@ class MQTT_Messages_Parser(object):
             SingleConfig.getConfig()[AppConstants.CONF_TAG_APP][AppConstants.CONF_WATERING_ENABLE] = "false"
             SingleConfig.save(SingleConfig.getConfig())
             get_instance().pub(AppConstants.MQTT_WATERING_TAG,"disabled")
+        elif value.lower() == 'read_values':
+            if SingleConfig.getConfig()[AppConstants.CONF_TAG_APP][AppConstants.CONF_WATERING_ENABLE].lower() == "true":
+                self.gci.get_pump_status()
+            else:
+                get_instance().pub(AppConstants.MQTT_WATERING_TAG,"disabled")
+
+            self.gci.get_air_moisture()
+            self.gci.get_temperature()
+            self.gci.get_soil_moiusture()
+            self.gci.get_light()
         else:
             self.logger.warn("value {} has is unknown: ignored".format(value))
 
