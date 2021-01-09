@@ -212,7 +212,7 @@ class Database_Interface():
                 else:
                     cur.execute(self.__DB_GET_AIR_TEMPERATURE_BY_DEVICE, (start_datetime,end_datetime,d_device['id']))
 
-                ret_value = [ {'value':float(row[0]),'time':datetime.datetime(row[1]),'device':row[2]} for row in cursor.fetchall()]
+                ret_value = [ {'value':float(row[0]),'time':datetime.datetime(row[1]),'device':row[2]} for row in cur.fetchall()]
             
             logger.debug('fetch values from db')
         except:  
@@ -261,7 +261,7 @@ class Database_Interface():
                 else:
                     cur.execute(self.__DB_GET_AIR_MOISTURE_BY_DEVICE, (start_datetime,end_datetime, d_device['id']))
 
-                ret_value = [{'value':float(row[0]),'time':datetime.datetime(row[1]),'device':row[2]} for row in cursor.fetchall()]
+                ret_value = [{'value':float(row[0]),'time':datetime.datetime(row[1]),'device':row[2]} for row in cur.fetchall()]
 
             logger.debug('fetch values from db')
         except:  
@@ -311,7 +311,7 @@ class Database_Interface():
                 else:
                     cur.execute(self.__DB_GET_SOIL_MOISTURE_BY_DEVICE, (start_datetime,end_datetime, d_device['id']))
 
-                ret_value = [{'value':float(row[0]),'time':datetime.datetime(row[1]),'device':row[2]} for row in cursor.fetchall()]
+                ret_value = [{'value':float(row[0]),'time':datetime.datetime(row[1]),'device':row[2]} for row in cur.fetchall()]
 
             logger.debug('fetch values from db')
         except:  
@@ -360,7 +360,7 @@ class Database_Interface():
                 else:
                     cur.execute(self.__DB_GET_LIGHT_BY_DEVICE, (start_datetime,end_datetime, d_device['id']))
 
-                ret_value = [{'value':float(row[0]),'time':datetime.datetime(row[1]),'device':row[2]} for row in cursor.fetchall()]
+                ret_value = [{'value':float(row[0]),'time':datetime.datetime(row[1]),'device':row[2]} for row in cur.fetchall()]
 
             logger.debug('fetch values from db')
         except:  
@@ -409,7 +409,7 @@ class Database_Interface():
                 else:
                     cur.execute(self.__DB_GET_PUMP_STATUS_BY_DEVICE, (start_datetime,end_datetime, d_device['id']))
 
-                ret_value = [{'value':float(row[0]),'time':datetime.datetime(row[1]),'device':row[2]} for row in cursor.fetchall()]
+                ret_value = [{'value':float(row[0]),'time':datetime.datetime(row[1]),'device':row[2]} for row in cur.fetchall()]
 
             logger.debug('fetch values from db')
         except:  
