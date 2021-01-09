@@ -24,21 +24,33 @@
 
 import logging, sys
 
-loggerList = []
+loggerList = {}
 logLevel = logging.DEBUG
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler = None
+
+def get_handler():
+    global handler
+
+    if handler is None:
+        handler = logging.StreamHandler(sys.stdout)
+        handler.setLevel(logLevel)
+        handler.setFormatter(formatter)
+    
+    return handler
 
 def getLogger(name):
     global logLevel
     global loggerList
-    logger = logging.getLogger(name)
-    logger.setLevel(logLevel)
-    handler = logging.StreamHandler(sys.stdout)
-    handler.setLevel(logLevel)
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
 
-    loggerList.append(logger)
+    if name not in loggerList.values() :
+        logger = logging.getLogger(name)
+        logger.setLevel(logLevel)
+        logger.propagate = False
+        logger.addHandler(get_handler())
+        loggerList[name] = logger
+    else:
+        logger = loggerList[name]
 
     return logger
 
@@ -49,5 +61,5 @@ def setLogFile(file):
     handler.setLevel(logLevel)
     handler.setFormatter(formatter)
 
-    for l in loggerList:
+    for l in loggerList.values() :
         l.addHandler(handler)
