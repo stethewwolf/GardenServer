@@ -1,7 +1,6 @@
 
 import sqlite3, datetime
-from app_modules.core import SingleConfig
-from app_modules.core import AppConstants
+from app_modules.core import SingleConfig, AppConstants, LoggerFactory
 
 __instance = None
 
@@ -15,6 +14,7 @@ def get_instance():
 
 class Database_Interface():
     def __init__(self):
+
         self.__DB_CREATE_TABLE_APP = 'CREATE TABLE IF NOT EXISTS `app` ( `id` INTEGER PRIMARY KEY\
                 AUTOINCREMENT, `key` TEXT UNIQUE, `value` TEXT )'
 
@@ -113,16 +113,34 @@ class Database_Interface():
         self.con.commit()
 
     def add_device(self, device_name):
-        cursor = self.con.cursor()
-        cursor.execute(self.__DB_INSERT_DEVICE, [device_name])
-        self.con.commit()
+        logger = LoggerFactory.getLogger(str(self.__class__ ))
+        try:  
+            with sqlite3.connect(AppConstants.DB_FILE) as con:  
+                cur = con.cursor()  
+                cur.execute(self.__DB_INSERT_DEVICE, [device_name])
+                con.commit()
+            logger.info('added device {}'.format(device_name))
+        except:  
+            con.rollback()  
+            logger.error('unable to insert into db device {}'.format(device_name))
+        finally:
+            con.close()    
 
         return self.get_device_by_name(device_name)
 
     def get_device_by_id(self, id):
-        cursor = self.con.cursor()
-        cursor.execute(self.__DB_GET_DEVICE_ID, [id])
-        row = cursor.fetchone()
+        logger = LoggerFactory.getLogger(str(self.__class__ ))
+        row = None
+        try:  
+            with sqlite3.connect(AppConstants.DB_FILE) as con:  
+                cur = con.cursor()  
+                cur.execute(self.__DB_GET_DEVICE_ID, [id])
+                row = cur.fetchone()
+                logger.info('found device {}'.format(id))
+        except:  
+            logger.error('unable to find device {}'.format(id))
+        finally:
+            con.close()    
 
         if row is not None:
             return {
@@ -134,9 +152,19 @@ class Database_Interface():
             return None
 
     def get_device_by_name(self, name):
-        cursor = self.con.cursor()
-        cursor.execute(self.__DB_GET_DEVICE_NAME, [name])
-        row = cursor.fetchone()
+        logger = LoggerFactory.getLogger(str(self.__class__ ))
+        row = None
+        try:  
+            with sqlite3.connect(AppConstants.DB_FILE) as con:  
+                cur = con.cursor()  
+                cur.execute(self.__DB_GET_DEVICE_NAME, [name])
+                row = cur.fetchone()
+                logger.info('found device {}'.format(name))
+        except:  
+            logger.error('unable to find device {}'.format(name))
+        finally:
+            con.close()    
+
         if row is not None:
             return {
                 'id': row[0],
@@ -148,121 +176,248 @@ class Database_Interface():
 
     def add_air_temperature(self, value, device_name):
         timestamp = datetime.datetime.now()
-        cursor = self.con.cursor()
-
         d_device = self.get_device_by_name(device_name)
+        logger = LoggerFactory.getLogger(str(self.__class__ ))
 
         if d_device is None:
             d_device = self.add_device(device_name)
 
-        cursor.execute(self.__DB_INSERT_AIR_TEMPERATURE, (value, timestamp, d_device['id']))
-        self.con.commit()
+        try:  
+            with sqlite3.connect(AppConstants.DB_FILE) as con:  
+                cur = con.cursor()  
+                cur.execute(self.__DB_INSERT_AIR_TEMPERATURE, (value, timestamp, d_device['id']))
+                con.commit()
+
+            logger.info('added value {} to air temperature from device {}'.format(value,device_name))
+        except:  
+            con.rollback()  
+            logger.error('unable to insert value {} to air temperature from device {}'.format(value,device_name))
+        finally:
+            con.close()    
 
     def get_air_temperature(self, start_datetime=datetime.datetime.now()-datetime.timedelta(hours=24),\
-                            end_datetime=datetime.datetime.now(), device_name=None):
-        cursor = self.con.cursor()
-
-        if device_name is None:
-            cursor.execute(self.__DB_GET_AIR_TEMPERATURE, (start_datetime,end_datetime))
-        else:
+            end_datetime=datetime.datetime.now(), device_name=None):
+        ret_value = []
+        logger = LoggerFactory.getLogger(str(self.__class__ ))
+        if device_name is not None:
             d_device = self.get_device_by_name(device_name)
-            cursor.execute(self.__DB_GET_AIR_TEMPERATURE_BY_DEVICE, (start_datetime,end_datetime,d_device['id']))
+        else:
+            d_device = None
 
-        return [ {'value':float(row[0]),'time':datetime.datetime(row[1]),'device':row[2]} for row in cursor.fetchall()]
+        try:  
+            with sqlite3.connect(AppConstants.DB_FILE) as con:  
+                cur = con.cursor()  
+                if d_device is None:
+                    cur.execute(self.__DB_GET_AIR_TEMPERATURE, (start_datetime,end_datetime))
+                else:
+                    cur.execute(self.__DB_GET_AIR_TEMPERATURE_BY_DEVICE, (start_datetime,end_datetime,d_device['id']))
+
+                ret_value = [ {'value':float(row[0]),'time':datetime.datetime(row[1]),'device':row[2]} for row in cursor.fetchall()]
+            
+            logger.debug('fetch values from db')
+        except:  
+            logger.error('unable to fetch values from db')
+        finally:
+            con.close()    
+        
+        return ret_value
 
     def add_air_moisture(self, value, device_name):
         timestamp = datetime.datetime.now()
-        cursor = self.con.cursor()
         d_device = self.get_device_by_name(device_name)
+        logger = LoggerFactory.getLogger(str(self.__class__ ))
 
         if d_device is None:
             d_device = self.add_device(device_name)
 
-        cursor.execute(self.__DB_INSERT_AIR_MOISTURE, (value, timestamp, d_device['id']))
-        self.con.commit()
+        try:  
+            with sqlite3.connect(AppConstants.DB_FILE) as con:  
+                cur = con.cursor()  
+                cur.execute(self.__DB_INSERT_AIR_MOISTURE, (value, timestamp, d_device['id']))
+                con.commit()
+
+            logger.info('added value {} to air humidity from device {}'.format(value,device_name))
+        except:  
+            con.rollback()  
+            logger.error('unable to insert value {} to air humidity from device {}'.format(value,device_name))
+        finally:
+            con.close()  
 
     def get_air_moisture(self, start_datetime=datetime.datetime.now()-datetime.timedelta(hours=24),\
                             end_datetime=datetime.datetime.now(), device_name=None):
-        cursor = self.con.cursor()
-
-        if device_name is None:
-            cursor.execute(self.__DB_GET_AIR_MOISTURE, (start_datetime,end_datetime))
-        else:
+        ret_value = []
+        logger = LoggerFactory.getLogger(str(self.__class__ ))
+        if device_name is not None:
             d_device = self.get_device_by_name(device_name)
-            cursor.execute(self.__DB_GET_AIR_MOISTURE_BY_DEVICE, (start_datetime,end_datetime, d_device['id']))
+        else:
+            d_device = None
 
-        return [ {'value':float(row[0]),'time':datetime.datetime(row[1]),'device':row[2]} for row in cursor.fetchall()]
+        try:  
+            with sqlite3.connect(AppConstants.DB_FILE) as con:  
+                cur = con.cursor()  
+
+                if d_device is None:
+                    cur.execute(self.__DB_GET_AIR_MOISTURE, (start_datetime,end_datetime))
+                else:
+                    cur.execute(self.__DB_GET_AIR_MOISTURE_BY_DEVICE, (start_datetime,end_datetime, d_device['id']))
+
+                ret_value = [{'value':float(row[0]),'time':datetime.datetime(row[1]),'device':row[2]} for row in cursor.fetchall()]
+
+            logger.debug('fetch values from db')
+        except:  
+            logger.error('unable to fetch values from db')
+        finally:
+            con.close()    
+        
+        return ret_value
 
     def add_soil_moisture(self, value, device_name):
         timestamp = datetime.datetime.now()
-        cursor = self.con.cursor()
         d_device = self.get_device_by_name(device_name)
+        logger = LoggerFactory.getLogger(str(self.__class__ ))
 
         if d_device is None:
             d_device = self.add_device(device_name)
 
-        cursor.execute(self.__DB_INSERT_SOIL_MOISTURE, (value, timestamp, d_device['id']))
- 
-        self.con.commit()
+        try:  
+            with sqlite3.connect(AppConstants.DB_FILE) as con:  
+                cur = con.cursor()  
+                cur.execute(self.__DB_INSERT_SOIL_MOISTURE, (value, timestamp, d_device['id']))
+                con.commit()
+
+            logger.info('added value {} to soil moisture from device {}'.format(value,device_name))
+        except:  
+            con.rollback()  
+            logger.error('unable to insert value {} to soil moisture from device {}'.format(value,device_name))
+        finally:
+            con.close()  
 
     def get_soil_moisture(self, start_datetime=datetime.datetime.now()-datetime.timedelta(hours=24),\
-                            end_datetime=datetime.datetime.now(), device_name=None):
-        cursor = self.con.cursor()
+            end_datetime=datetime.datetime.now(), device_name=None):
+        ret_value = []
+        logger = LoggerFactory.getLogger(str(self.__class__ ))
 
-        if device_name is None:
-            cursor.execute(self.__DB_GET_SOIL_MOISTURE, (start_datetime,end_datetime))
-        else:
+        if device_name is not None:
             d_device = self.get_device_by_name(device_name)
-            cursor.execute(self.__DB_GET_AIR_MOISTURE_BY_DEVICE, (start_datetime,end_datetime, d_device['id']))
+        else:
+            d_device = None
+            
+        try:  
+            with sqlite3.connect(AppConstants.DB_FILE) as con:  
+                cur = con.cursor()  
 
-        return [ {'value':float(row[0]),'time':datetime.datetime(row[1]),'device':row[2]} for row in cursor.fetchall()]
+                if d_device is None:
+                    cur.execute(self.__DB_GET_SOIL_MOISTURE, (start_datetime,end_datetime))
+                else:
+                    cur.execute(self.__DB_GET_SOIL_MOISTURE_BY_DEVICE, (start_datetime,end_datetime, d_device['id']))
+
+                ret_value = [{'value':float(row[0]),'time':datetime.datetime(row[1]),'device':row[2]} for row in cursor.fetchall()]
+
+            logger.debug('fetch values from db')
+        except:  
+            logger.error('unable to fetch values from db')
+        finally:
+            con.close()    
+        
+        return ret_value
 
     def add_light(self, value, device_name):
         timestamp = datetime.datetime.now()
-        cursor = self.con.cursor()
         d_device = self.get_device_by_name(device_name)
+        logger = LoggerFactory.getLogger(str(self.__class__ ))
 
         if d_device is None:
             d_device = self.add_device(device_name)
 
-        cursor.execute(self.__DB_INSERT_LIGHT, (value, timestamp, d_device['id']))
- 
-        self.con.commit()
+        try:  
+            with sqlite3.connect(AppConstants.DB_FILE) as con:  
+                cur = con.cursor()  
+                cur.execute(self.__DB_INSERT_LIGHT, (value, timestamp, d_device['id']))
+                con.commit()
+
+            logger.info('added value {} to light from device {}'.format(value,device_name))
+        except:  
+            con.rollback()  
+            logger.error('unable to insert value {} to light from device {}'.format(value,device_name))
+        finally:
+            con.close()  
 
     def get_light(self, start_datetime=datetime.datetime.now()-datetime.timedelta(hours=24),\
                             end_datetime=datetime.datetime.now()):
-        cursor = self.con.cursor()
-        if device_name is None:
-            cursor.execute(self.__DB_GET_LIGHT, (start_datetime,end_datetime))
-        else:
+        ret_value = []
+        logger = LoggerFactory.getLogger(str(self.__class__ ))
+        if device_name is not None:
             d_device = self.get_device_by_name(device_name)
-            cursor.execute(self.__DB_GET_LIGHT_BY_DEVICE, (start_datetime,end_datetime, d_device['id']))
+        else:
+            d_device = None
+            
+        try:  
+            with sqlite3.connect(AppConstants.DB_FILE) as con:  
+                cur = con.cursor()  
 
-        return [ {'value':float(row[0]),'time':datetime.datetime(row[1]),'device':row[2]} for row in cursor.fetchall()]
+                if d_device is None:
+                    cur.execute(self.__DB_GET_LIGHT, (start_datetime,end_datetime))
+                else:
+                    cur.execute(self.__DB_GET_LIGHT_BY_DEVICE, (start_datetime,end_datetime, d_device['id']))
+
+                ret_value = [{'value':float(row[0]),'time':datetime.datetime(row[1]),'device':row[2]} for row in cursor.fetchall()]
+
+            logger.debug('fetch values from db')
+        except:  
+            logger.error('unable to fetch values from db')
+        finally:
+            con.close()    
+        
+        return ret_value
 
     def add_pump_status(self, value, device_name):
         timestamp = datetime.datetime.now()
-        cursor = self.con.cursor()
         d_device = self.get_device_by_name(device_name)
+        logger = LoggerFactory.getLogger(str(self.__class__ ))
 
         if d_device is None:
             d_device = self.add_device(device_name)
 
-        cursor.execute(self.__DB_INSERT_PUMP_STATUS, (value, timestamp, d_device['id']))
- 
-        self.con.commit()
+        try:  
+            with sqlite3.connect(AppConstants.DB_FILE) as con:  
+                cur = con.cursor()  
+                cur.execute(self.__DB_INSERT_PUMP_STATUS, (value, timestamp, d_device['id']))
+                con.commit()
+
+            logger.info('added value {} to pump status from device {}'.format(value,device_name))
+        except:  
+            con.rollback()  
+            logger.error('unable to insert value {} to pump status from device {}'.format(value,device_name))
+        finally:
+            con.close()  
 
     def get_pump_status(self, start_datetime=datetime.datetime.now()-datetime.timedelta(hours=24),\
                             end_datetime=datetime.datetime.now()):
-        cursor = self.con.cursor()
-        
-        if device_name is None:
-            cursor.execute(self.__DB_GET_PUMP_STATUS, (start_datetime,end_datetime))
-        else:
+        ret_value = []
+        logger = LoggerFactory.getLogger(str(self.__class__ ))
+        if device_name is not None:
             d_device = self.get_device_by_name(device_name)
-            cursor.execute(self.__DB_GET_PUMP_STATUS_BY_DEVICE, (start_datetime,end_datetime, d_device['id']))
+        else:
+            d_device = None
+            
+        try:  
+            with sqlite3.connect(AppConstants.DB_FILE) as con:  
+                cur = con.cursor()  
 
-        return [ {'value':int(row[0]),'time':datetime.datetime(row[1]),'device':row[2]} for row in cursor.fetchall()]
+                if d_device is None:
+                    cur.execute(self.__DB_GET_PUMP_STATUS, (start_datetime,end_datetime))
+                else:
+                    cur.execute(self.__DB_GET_PUMP_STATUS_BY_DEVICE, (start_datetime,end_datetime, d_device['id']))
+
+                ret_value = [{'value':float(row[0]),'time':datetime.datetime(row[1]),'device':row[2]} for row in cursor.fetchall()]
+
+            logger.debug('fetch values from db')
+        except:  
+            logger.error('unable to fetch values from db')
+        finally:
+            con.close()    
+        
+        return ret_value
 
     def close(self):
         self.con.close()
